@@ -6,17 +6,19 @@
 
 1. [安装 Windows Terminal](https://github.com/microsoft/terminal).
 1. [安装 PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-7).
-1. 以**管理员身份**启动 PowerShell 7 控制台 (Powershell < 7 是**不行**的)，然后运行 `install.ps1` 脚本，将【上下文菜单项】安装到 Windows 资源管理器。现在，菜单项已添加到 Windows 资源管理器上下文菜单了。
+1. 以**管理员身份**启动 PowerShell 7 控制台 (Powershell < 7 是**不行的**)，然后运行 `install.ps1` 脚本，将【右键菜单项】安装到 Windows 资源管理器。
     > 快速运行
     >```powershell
     > Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SplitGemini/windowsterminal-shell/master/install.ps1'))
     >``` 
+1. 现在，菜单项已添加到 Windows 资源管理器右键菜单了。
+
 ## 2. 参数说明
 
 ### -Layout
-> 可选：['Default', 'Flat', 'Mini']，默认为`Default`
+> 可选：['Default', 'Flat', 'Mini']，默认为 `Default`
 
-可直接运行`.\install.ps1 mini`或`.\install.ps1 flat`安装其他布局  
+可直接运行 `.\install.ps1 mini` 或 `.\install.ps1 flat` 安装其他布局  
 Default：  
 ![Default](img/default_chs.png)  
 Flat：  
@@ -39,19 +41,21 @@ Mini：
 ![Mini](img/mini.png)  
 
 ### -Extended
-参数添加`-Extended`安装后，只有在按住`Shift`键之后按下右键才会显示安装的选项。  
-[参照](https://docs.microsoft.com/en-us/windows/win32/shell/context#shortcut-menu-verbs)
+参数添加 `-Extended` 安装后，只有在按住 `Shift` 键之后按下右键才会显示安装的选项。[参照](https://docs.microsoft.com/en-us/windows/win32/shell/context#shortcut-menu-verbs)
 
 ### -MenuType
-> 可选['Both', 'OnlyUser', 'OnlyAdmin']，默认为Both
+> 可选['Both', 'OnlyUser', 'OnlyAdmin']，默认为 `Both`
 
 - OnlyUser: 只安装非管理员选项  
 - OnlyAdmin: 只安装管理员选项  
 - Both: 两者都安装  
 
+### -Uninstall
+使用该参数卸载菜单，不分种类，自动检测新旧版本。
+
 ## 3. 卸载
 
-以管理员身份，在 PowerShell Core 7 中，执行 `uninstall.ps1` 即可删除配置。
+以管理员身份，在PowerShell Core 7中，执行 `.\install.ps1 -Uninstall` 即可删除配置。
 
 ## 4. 注意
 

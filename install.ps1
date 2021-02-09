@@ -14,7 +14,9 @@ param(
     [switch] $Extended,
     [Parameter()]
     [ValidateSet('Both', 'OnlyUser', 'OnlyAdmin')]
-    [string] $MenuType = 'Both'
+    [string] $MenuType = 'Both',
+    [Parameter()]
+    [switch] $Uninstall
 )
 
 
@@ -533,64 +535,130 @@ function CreateMenuItems(
 }
 
 
-# Based on @nerdio01's version in https://github.com/microsoft/terminal/issues/1060
-if ((Test-Path "Registry::HKEY_CLASSES_ROOT\Directory\shell\MenuTerminal") -and
-    -not (Test-Path "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\shell\MenuTerminal")) {
-    if ($UseEnglish) {
-        Write-Error "Please execute uninstall.old.ps1 to remove previous installation."
+function Uninstall(
+    [Parameter()]
+    [switch] $IsOld) {
+    if ((Test-Path "Registry::HKEY_CLASSES_ROOT\Directory\shell\MenuTerminal") -and
+        -not (Test-Path "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\shell\MenuTerminal") -and
+        -not $IsOld) {
+        $IsOld = $true
+        Write-Host 'Detected old version installation.'
+    }
+    
+    $localCache = "$Env:LOCALAPPDATA\Microsoft\WindowsApps\Cache"
+    if (Test-Path $localCache) {
+        Remove-Item $localCache -Recurse
+    }
+    
+    $rootKey = $IsOld ? 'HKEY_CLASSES_ROOT\Directory\shell' 
+                      : 'HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\shell' 
+    foreach ($key in Get-ChildItem -Path "Registry::$rootKey") {
+        if ($key.Name -like "$rootKey\MenuTerminal*") {
+            Remove-Item "Registry::$key" -Recurse -ErrorAction Ignore | Out-Null
+            if ($UseEnglish) {
+                Write-Host "Deleted `"$key`""
             }
-    else {
-        Write-Error "Please execute uninstall.old.ps1 to remove previous installation."
+            else {
+                Write-Host "已删除 `"$key`""
+            }
+        }
     }
-    exit 1
-}
-
-if ($PSVersionTable.PSVersion.Major -lt 7) {
+    
+    $rootKey = $IsOld ? 'HKEY_CLASSES_ROOT\Directory\Background\shell' 
+                      : 'HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\Background\shell'
+    foreach ($key in Get-ChildItem -Path "Registry::$rootKey") {
+        if ($key.Name -like "$rootKey\MenuTerminal*") {
+            Remove-Item "Registry::$key" -Recurse -ErrorAction Ignore | Out-Null
+            if ($UseEnglish) {
+                Write-Host "Deleted `"$key`""
+            }
+            else {
+                Write-Host "已删除 `"$key`""
+            }
+        }
+    }
+    
+    $rootKey = $IsOld ? 'HKEY_CLASSES_ROOT\Directory\ContextMenus' 
+                      : 'HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\ContextMenus'
+    foreach ($key in Get-ChildItem -Path "Registry::$rootKey") {
+        if ($key.Name -like "$rootKey\MenuTerminal*") {
+            Remove-Item "Registry::$key" -Recurse -ErrorAction Ignore | Out-Null
+            if ($UseEnglish) {
+                Write-Host "Deleted `"$key`""
+            }
+            else {
+                Write-Host "已删除 `"$key`""
+            }
+        }
+    }
     if ($UseEnglish) {
-        Write-Error "Must be executed in PowerShell 7 and above."+
-                    " Learn how to install it from https://docs.microsoft.com/"+
-                    "en-us/powershell/scripting/install/installing-powershell-co"+
-                    "re-on-windows?view=powershell-7 . Exit."
+        Write-Host "`nWindows Terminal uninstalled from Windows Explorer context menu."
     }
     else {
-        Write-Error "使用的PowerShell版本必须大于7，"+
-                    "在此安装最新版：`"https://docs.microsoft.com/"+
-                    "en-us/powershell/scripting/install/installing-powershell-co"+
-                    "re-on-windows?view=powershell-7`"，退出。"
+        Write-Host "`nWindows Terminal 启动项已经从资源管理器右键菜单移除。"
     }
-    exit 1
 }
 
 
-$executable = "$Env:LOCALAPPDATA\Microsoft\WindowsApps\wt.exe"
-if (-not (Test-Path $executable)) {
-    if ($UseEnglish) {
-        Write-Error "Windows Terminal not detected. "+
-                    "Learn how to install it from https://github.com/microsoft/terminal "+
-                    "(via Microsoft Store is recommended). Exit."
-    }
-    else {
-        Write-Error "未检测到Windows Terminal。"+
-                    "在此安装：`"https://github.com/microsoft/terminal`""+
-                    "，（推荐通过Microsoft Store安装）, 退出。"
-    }
-    exit 1
-}
-
-
-# main
-if ($UseEnglish) {
-    Write-Host "Layout: $Layout"
-    CreateMenuItems $executable $Layout $PreRelease
-    Write-Host ""
-    Write-Host "Windows Terminal installed to Windows Explorer context menu."
-    Write-Host "P.S. Uninstall use '.\uninstall.ps1' please"
+if ($Uninstall) {
+    Uninstall
 }
 else {
-    Write-Host "布局风格：$Layout"
-    CreateMenuItems $executable $Layout $PreRelease
-    Write-Host ""
-    Write-Host "Windows Terminal 启动选项已添加到资源管理器右键菜单"
-    Write-Host "P.S. 卸载请使用 `".\uninstall.ps1`""
+    # Based on @nerdio01's version in https://github.com/microsoft/terminal/issues/1060
+    if ((Test-Path "Registry::HKEY_CLASSES_ROOT\Directory\shell\MenuTerminal") -and
+        -not (Test-Path "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\shell\MenuTerminal")) {
+        if ($UseEnglish) {
+            Write-Error "Detected previous installation. Run uninstall first."
+        }
+        else {
+            Write-Error "检测到旧版本，先把它卸载。"
+        }
+        Uninstall -IsOld
+    }
+    
+    if ($PSVersionTable.PSVersion.Major -lt 7) {
+        if ($UseEnglish) {
+            Write-Error "Must be executed in PowerShell 7 and above."+
+                        " Learn how to install it from https://docs.microsoft.com/"+
+                        "en-us/powershell/scripting/install/installing-powershell-co"+
+                        "re-on-windows?view=powershell-7 . Exit."
+        }
+        else {
+            Write-Error "使用的PowerShell版本必须大于7，"+
+                        "在此安装最新版：`"https://docs.microsoft.com/"+
+                        "en-us/powershell/scripting/install/installing-powershell-co"+
+                        "re-on-windows?view=powershell-7`"，退出。"
+        }
+        exit 1
+    }
+    
+    $executable = "$Env:LOCALAPPDATA\Microsoft\WindowsApps\wt.exe"
+    if (-not (Test-Path $executable)) {
+        if ($UseEnglish) {
+            Write-Error "Windows Terminal not detected. "+
+                        "Learn how to install it from https://github.com/microsoft/terminal "+
+                        "(via Microsoft Store is recommended). Exit."
+        }
+        else {
+            Write-Error "未检测到Windows Terminal。"+
+                        "在此安装：`"https://github.com/microsoft/terminal`""+
+                        "，（推荐通过Microsoft Store安装）, 退出。"
+        }
+        exit 1
+    }
+    
+    if ($UseEnglish) {
+        Write-Host "Layout: $Layout"
+        CreateMenuItems $executable $Layout $PreRelease
+        Write-Host ""
+        Write-Host "Windows Terminal installed to Windows Explorer context menu."
+        Write-Host "P.S. Uninstall use '.\uninstall.ps1' please"
+    }
+    else {
+        Write-Host "布局风格：$Layout"
+        CreateMenuItems $executable $Layout $PreRelease
+        Write-Host ""
+        Write-Host "Windows Terminal 启动选项已添加到资源管理器右键菜单"
+        Write-Host "P.S. 卸载请使用 `".\install.ps1 -Uninstall`""
+    }
 }
-
