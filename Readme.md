@@ -2,55 +2,62 @@
 
 *A project backed by [LeXtudio Inc.](https://www.lextudio.com)*
 
-## Install
+## 1. 部署
 
-1. [Install Windows Terminal](https://github.com/microsoft/terminal).
-1. [Install PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-7).
-1. Launch PowerShell 7 console as administrator, and run `install.ps1` to install context menu items to Windows Explorer.
+1. [安装 Windows Terminal](https://github.com/microsoft/terminal).
+1. [安装 PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-7).
+1. 以**管理员身份**启动 PowerShell 7 控制台 (Powershell < 7 是**不行**的)，然后运行 `install.ps1` 脚本，将【上下文菜单项】安装到 Windows 资源管理器。现在，菜单项已添加到 Windows 资源管理器上下文菜单了。
+    > 快速运行
+    >```powershell
+    > Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lextm/windowsterminal-shell/master/install.ps1'))
+    >``` 
+## 2. 参数说明
 
-   > Quickest way to run the latest script from GitHub at an elevated PowerShell 7 console is
+#### -Layout
+> 可选：['Default', 'Flat', 'Mini']，默认为`Default`
 
-   > ``` powershell
-   > Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lextm/windowsterminal-shell/master/install.ps1'))
-   > ```
+可直接运行`.\install.ps1 mini`或`.\install.ps1 flat`安装其他布局  
+Default：  
+![Default](img/default_chs.png)  
+Flat：  
+![Flat](img/flat_chs.png)  
+Mini：  
+![Mini](img/mini_chs.png) 
 
-Now the menu items are added to Windows Explorer context menu.
+#### -PreRelease
+支持PreRelease版本的Windows Terminal。
 
-![default layout](default.png)
+#### -UseEnglish
+Just English Version.
+默认为中文，参数添加`-UseEnglish`改为英文版本  
+预览如下：    
+Default：  
+![Default](img/default.png)  
+Flat：  
+![Flat](img/flat.png)  
+Mini：  
+![Mini](img/mini.png)  
 
-Figure 1: Default layout
+#### -Extended
+参数添加`-Extended`安装后，只有在按住`Shift`键之后按下右键才会显示安装的选项。  
+[参照](https://docs.microsoft.com/en-us/windows/win32/shell/context#shortcut-menu-verbs)
 
-> The menu items are organized in the `default` layout. Other layouts such as `mini` and `flat` give different look and feel. To apply an alternative layout (like `mini`), simply run `install.ps1 mini`.
+#### -MenuType
+> 可选['Both', 'OnlyUser', 'OnlyAdmin']，默认为Both
 
-![flat layout](flat.png)
+- OnlyUser: 只安装非管理员选项  
+- OnlyAdmin: 只安装管理员选项  
+- Both: 两者都安装  
 
-Figure 2: Flat layout
+## 3. 卸载
 
-![mini layout](mini.png)
+以管理员身份，在 PowerShell Core 7 中，执行 `uninstall.ps1` 即可删除配置。
 
-Figure 3: Mini layout
+## 4. 注意
 
-## Uninstall
-1. Run `uninstall.ps1` to uninstall context menu items from Windows Explorer.
-
-> To uninstall an alternative layout (like `mini`), run `uninstall.ps1 mini`.
-
-## Notes
-The current release only supports Windows 10 machines (Windows Terminal restriction) and Windows Terminal installed via the store or .appx file.
-
-> If Windows Terminal is installed via Scoop, [scripts from another repo](https://github.com/grimux/windowsterminal-shell-scoop/tree/scoop-support) might help.
-
-The install script must be run as administrator.
-
-> That's because it pulls out data from Windows Terminal's installation folder, which is locked down by Windows 10.
-
-PowerShell 7 installed from Microsoft Store is not supported by the scripts (more details can be found in [#37](https://github.com/lextm/windowsterminal-shell/issues/37)).
-
-`install.ps1` and `uninstall.ps1` only manipulate current user's Windows Explorer settings for the context menu items, and do not write to Windows Terminal settings.
-
-> So different users on the same machine must install the context menu items separately, but possibly with different layouts.
-
-Downloading Windows Terminal icon from GitHub (in `install.ps1`) requires internet connection, but in general is just an optional step that won't be executed in most cases.
-
-## More Products
-To learn more about other cool products from LeXtudio Inc. , please visit [our homepage](https://www.lextudio.com/#projects).
+- 当前版本仅支持 Windows 10；
+- `install.ps1` 和 `uninstall.ps1` 脚本**必须**以管理员身份运行；
+- **必须**在版本 >= 7 的 PowerShell 下执行脚本；
+- `install.ps1` 和 `uninstall.ps1` 仅操作上下文菜单项的 Windows 资源管理器设置，而不写入 Windows Terminal 的设置；
+- 从 GitHub 下载 Windows Terminal 图标 (在 `install.ps1` 中) 需要 Internet 连接，最好在运行 `install.ps1` 时，将代理软件设置为全局代理；
+- 善用`Tab`自动补全
