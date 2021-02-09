@@ -60,8 +60,8 @@ Mini：
 ## 4. 注意
 
 - 当前版本仅支持 Windows 10；
-- `install.ps1` 和 `uninstall.ps1` 脚本**必须**以管理员身份运行；
+- `install.ps1` 脚本**必须**以管理员身份运行；
 - **必须**在版本 >= 7 的 PowerShell 下执行脚本；
-- `install.ps1` 和 `uninstall.ps1` 仅操作上下文菜单项的 Windows 资源管理器设置，而不写入 Windows Terminal 的设置；
+- `install.ps1` 仅操作上下文菜单项的 Windows 资源管理器设置，而不写入 Windows Terminal 的设置；
 - 从 GitHub 下载 Windows Terminal 图标 (在 `install.ps1` 中) 需要 Internet 连接，最好在运行 `install.ps1` 时，将代理软件设置为全局代理；
 - 善用`Tab`自动补全
