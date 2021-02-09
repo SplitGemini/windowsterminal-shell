@@ -9,11 +9,11 @@
 1. 以**管理员身份**启动 PowerShell 7 控制台 (Powershell < 7 是**不行**的)，然后运行 `install.ps1` 脚本，将【上下文菜单项】安装到 Windows 资源管理器。现在，菜单项已添加到 Windows 资源管理器上下文菜单了。
     > 快速运行
     >```powershell
-    > Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lextm/windowsterminal-shell/master/install.ps1'))
+    > Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SplitGemini/windowsterminal-shell/master/install.ps1'))
     >``` 
 ## 2. 参数说明
 
-#### -Layout
+### -Layout
 > 可选：['Default', 'Flat', 'Mini']，默认为`Default`
 
 可直接运行`.\install.ps1 mini`或`.\install.ps1 flat`安装其他布局  
@@ -24,11 +24,11 @@ Flat：
 Mini：  
 ![Mini](img/mini_chs.png) 
 
-#### -PreRelease
+### -PreRelease
 支持PreRelease版本的Windows Terminal。
 
-#### -UseEnglish
-Just English Version.
+### -UseEnglish
+Just English Version.  
 默认为中文，参数添加`-UseEnglish`改为英文版本  
 预览如下：    
 Default：  
@@ -38,11 +38,11 @@ Flat：
 Mini：  
 ![Mini](img/mini.png)  
 
-#### -Extended
+### -Extended
 参数添加`-Extended`安装后，只有在按住`Shift`键之后按下右键才会显示安装的选项。  
 [参照](https://docs.microsoft.com/en-us/windows/win32/shell/context#shortcut-menu-verbs)
 
-#### -MenuType
+### -MenuType
 > 可选['Both', 'OnlyUser', 'OnlyAdmin']，默认为Both
 
 - OnlyUser: 只安装非管理员选项  
