@@ -545,18 +545,18 @@ if ((Test-Path "Registry::HKEY_CLASSES_ROOT\Directory\shell\MenuTerminal") -and
     exit 1
 }
 
-if ($PSVersionTable.PSVersion.Major -lt 6) {
+if ($PSVersionTable.PSVersion.Major -lt 7) {
     if ($UseEnglish) {
-        Write-Error "Must be executed in PowerShell 6 and above."+
+        Write-Error "Must be executed in PowerShell 7 and above."+
                     " Learn how to install it from https://docs.microsoft.com/"+
                     "en-us/powershell/scripting/install/installing-powershell-co"+
                     "re-on-windows?view=powershell-7 . Exit."
     }
     else {
-        Write-Error "Must be executed in PowerShell 6 and above."+
-                    " Learn how to install it from https://docs.microsoft.com/"+
+        Write-Error "使用的PowerShell版本必须大于7，"+
+                    "在此安装最新版：`"https://docs.microsoft.com/"+
                     "en-us/powershell/scripting/install/installing-powershell-co"+
-                    "re-on-windows?view=powershell-7 . Exit."
+                    "re-on-windows?view=powershell-7`"，退出。"
     }
     exit 1
 }
