@@ -58,7 +58,7 @@ Mini：
 以管理员身份，在PowerShell Core 7中，执行 `.\install.ps1 -Uninstall` 即可删除配置。
 
 ## Profile
-附加一个Windows Terminal profile，需要Module：posh-git，oh-my-posh，PSReadLine，DirColors  
+附加一个Windows Terminal profile，需要Module：posh-git，oh-my-posh，PSReadLine，DirColors，ZLocation  
 并设置dircolor文件路径和代理端口
 
 ## 4. 注意

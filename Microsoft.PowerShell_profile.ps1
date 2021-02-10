@@ -16,6 +16,9 @@ Import-Module oh-my-posh
 # PSReadLine
 Import-Module PSReadLine
 
+# ZLocation
+Import-Module ZLocation
+
 # 引入 DirColors并设置颜色
 Import-Module DirColors
 # path of dircolors
