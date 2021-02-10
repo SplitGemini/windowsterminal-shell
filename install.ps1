@@ -446,7 +446,7 @@ function CreateProfileMenuItems(
     $guid = $profile.guid
     $name = $profile.name
     $command = """$executable"" -p ""$name"" -d ""%V."""
-    $elevated = "wscript.exe ""$localCache/helper.vbs"" ""$executable"" ""%V."" ""$name"""
+    $elevated = "wscript.exe ""$localCache\helper.vbs"" ""$executable"" ""%V."" ""$name"""
     $profileIcon = GetProfileIcon $profile $folder $localCache $icon $isPreview
     
     if ($layout -eq "Default") { 
@@ -518,7 +518,7 @@ function CreateMenuItems(
             ($UseEnglish ? "Windows Terminal Here" : "在此打开 Windows Terminal") $icon $command $false
         }
         if ($MenuType -ne 'OnlyUser') {
-            $elevated = "wscript.exe ""$localCache/helper.vbs"" ""$executable"" ""%V."""
+            $elevated = "wscript.exe ""$localCache\helper.vbs"" ""$executable"" ""%V."""
             CreateMenuItem "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\shell\MenuTerminalMini_Admin"`
             ($UseEnglish ? "Windows Terminal Here as Administrator" : "在此打开 Windows Terminal (管理员)") $icon $elevated $true
             CreateMenuItem "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\Background\shell\MenuTerminalMini_Admin"`
