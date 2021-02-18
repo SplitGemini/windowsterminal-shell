@@ -621,7 +621,7 @@ else {
             Write-Error "Must be executed in PowerShell 7 and above."+
                         " Learn how to install it from https://docs.microsoft.com/"+
                         "en-us/powershell/scripting/install/installing-powershell-co"+
-                        "re-on-windows?view=powershell-7 . Exit."
+                        "re-on-windows?view=powershell-7. Exit."
         }
         else {
             Write-Error "使用的PowerShell版本必须大于7，"+
@@ -652,7 +652,7 @@ else {
         CreateMenuItems $executable $Layout $PreRelease
         Write-Host ""
         Write-Host "Windows Terminal installed to Windows Explorer context menu."
-        Write-Host "P.S. Uninstall use '.\uninstall.ps1' please"
+        Write-Host "P.S. Uninstall use '.\install.ps1 -Uninstall' please"
     }
     else {
         Write-Host "布局风格：$Layout"
