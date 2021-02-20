@@ -2,7 +2,7 @@
  * FileName: Microsoft.PowerShell_profile.ps1
  * Author: 
  * Email: 
- * Date: 2021, Feb. 10
+ * Date: 
  * Copyright: No copyright. You can use this code for anything with no warranty.
 #>
 
@@ -18,14 +18,21 @@ Import-Module PSReadLine
 
 # ZLocation
 Import-Module ZLocation
+# for z.lua，类似ZLocation
+#Start-Job -ScriptBlock {iex ($(lua D:\Administrator\Documents\PowerShell\z.lua --init powershell) -join "`n")}
 
-# 引入 DirColors并设置颜色
-Import-Module DirColors
-# path of dircolors
-Update-DirColors "dircolors.ansi-dark"
+# 引入 DirColors并设置颜色，已卸载
+#Import-Module DirColors
+#Update-DirColors "D:\Administrator\Documents\PowerShell\dircolors.ansi-dark"
 
-# 设置 PowerShell 主题
-Set-Theme Paradox
+Import-Module Terminal-Icons
+Import-Module PowerColorLS
+
+# 设置个人主题
+Set-PoshPrompt -Theme powerlevel10k_classic
+
+Import-Module Get-MediaInfo
+
 #------------------------------- Import Modules END   -------------------------------
 
 
@@ -121,10 +128,10 @@ Set-PSReadLineKeyHandler -Key F7 `
 
 #-------------------------------    Functions BEGIN   -------------------------------
 # Python 直接执行
-$env:PATHEXT += ";.py"
+#$env:PATHEXT += ";.py"
 
 # 更新 pip 的方法
-function Update-Packages {
+function Update-Pip {
     # update pip
     Write-Host "更新 pip" -ForegroundColor Magenta -BackgroundColor Cyan
     $a = pip list --outdated
@@ -134,7 +141,15 @@ function Update-Packages {
         pip install -U $tmp
     }
 }
-
+# 更新modules
+function Update-Modules {
+    Write-Host "更新 powershell modules" -ForegroundColor Magenta -BackgroundColor Cyan
+    . $PSScriptRoot/Update-AllPowerShellModules.ps1
+}
+function Update-All {
+    Update-Pip
+    Update-Modules
+}
 #-------------------------------    Functions END     -------------------------------
 
 
@@ -172,7 +187,7 @@ if ($enable -gt 0){
     $proxy = "http://$((Get-ItemProperty -Path $regPath).ProxyServer)"
     $Env:http_proxy=$proxy
     $Env:https_proxy=$proxy
-    Write-Host "设置代理为：$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
+    Write-Host "Set Proxy:$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
 }
 elseif (Test-Port -ComputerName "127.0.0.1" -Port $port) {
     $proxy = "http://127.0.0.1:$port"
@@ -181,7 +196,7 @@ elseif (Test-Port -ComputerName "127.0.0.1" -Port $port) {
     # 这是加在环境变量里
     #[Environment]::SetEnvironmentVariable('http_proxy', $proxy, 'User')
     #[Environment]::SetEnvironmentVariable('https_proxy', $proxy, 'User')
-    Write-Host "设置代理为：$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
+    Write-Host "Set Proxy:$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
 }
 
 
@@ -191,12 +206,9 @@ elseif (Test-Port -ComputerName "127.0.0.1" -Port $port) {
 
 #-------------------------------   Set Alias Begin    -------------------------------
 
-# 2. 更新系统 os-update
-Set-Alias -Name os-update -Value Update-Packages
+function zlfuc ([Parameter()][String]$param){ z -l $param }
 
-# 3. 查看目录 ls & ll
-function ListDirectory {
-    get-childitem | format-wide
-}
-Set-Alias -Name ls -Value ListDirectory
+# 3. 查看目录 ls
+Set-Alias -Name ls -Value PowerColorLS -Option AllScope
+Set-Alias -Name zl -Value zlfuc -Option AllScope
 #-------------------------------    Set Alias END     -------------------------------
