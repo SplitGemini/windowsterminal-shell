@@ -58,8 +58,17 @@ Mini：
 以管理员身份，在PowerShell Core 7中，执行 `.\install.ps1 -Uninstall` 即可删除配置。
 
 ## Profile
-附加一个Windows Terminal profile，需要Module：posh-git，oh-my-posh，PSReadLine，DirColors，ZLocation  
-并设置dircolor文件路径和代理端口
+附加一个Windows Terminal profile
+需要Module：
+* [posh-git](https://github.com/dahlbyk/posh-git): 
+* [oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh): newest version 3+.
+* [PSReadLine](https://github.com/PowerShell/PSReadLine): 2.20beta1.
+* [PowerColorLS](https://github.com/SplitGemini/PowerColorLS): Customed by myself, but use [origin version](https://github.com/gardebring/PowerColorLS) is ok.
+* [ZLocation](https://github.com/vors/ZLocation): z command like z.sh.
+* [Get-MediaInfo](https://github.com/stax76/Get-MediaInfo): just get mediainfo.  
+  
+需要同目录的[Update-AllPowerShellModules.ps1](Update-AllPowerShellModules.ps1)，使用Update-Pip更新pip，Update-Modules更新所有module。
+会自动设置代理，默认端口1080
 
 ## 4. 注意
 
