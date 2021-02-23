@@ -466,9 +466,9 @@ function CreateProfileMenuItems(
             ($UseEnglish ? "$name Here" : "在此打开 $name") $profileIcon $command $false
         }
         if ($MenuType -ne 'OnlyUser') {
-            CreateMenuItem "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\shell\MenuTerminal_$($guid)_Admin"`
+            CreateMenuItem "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\shell\MenuTerminal_${guid}_Admin"`
             ($UseEnglish ? "$name Here as Administrator" : "在此打开 $name (管理员)") $profileIcon $elevated $true
-            CreateMenuItem "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\Background\shell\MenuTerminal_$($guid)_Admin"`
+            CreateMenuItem "Registry::HKEY_CURRENT_USER\SOFTWARE\Classes\Directory\Background\shell\MenuTerminal_${guid}_Admin"`
             ($UseEnglish ? "$name Here as Administrator" : "在此打开 $name (管理员)") $profileIcon $elevated $true
         }
     }

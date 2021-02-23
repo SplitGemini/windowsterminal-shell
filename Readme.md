@@ -67,8 +67,8 @@ Mini：
 * [ZLocation](https://github.com/vors/ZLocation): z command like z.sh.
 * [Get-MediaInfo](https://github.com/stax76/Get-MediaInfo): just get mediainfo.  
   
-需要同目录的[Update-AllPowerShellModules.ps1](Update-AllPowerShellModules.ps1)，使用Update-Pip更新pip，Update-Modules更新所有module。
-会自动设置代理，默认端口1080
+需要同目录的[Update-AllPowerShellModules.ps1](Update-AllPowerShellModules.ps1)，使用`Update-Pip`更新pip，`Update-Modules`更新所有module，`Update-All`更新俩者。
+会自动设置代理，默认端口1080，自动判断terminal是不是Windows Terminal，如果不是不初始化前面的所有模块和设置，目的是加快启动速度，单脚本大多不需要这些模块
 
 ## 4. 注意
 
