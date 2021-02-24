@@ -1,7 +1,7 @@
-# PowerShell Scripts to Install/Uninstall Context Menu Items for Windows Terminal
-
+# PowerShell Scripts 
+一些Powershell脚本，Core Version > 7 is prefered. 
 *A project backed by [LeXtudio Inc.](https://www.lextudio.com)*
-
+# Install/Uninstall Context Menu Items for Windows Terminal
 ## 1. 部署
 
 1. [安装 Windows Terminal](https://github.com/microsoft/terminal).
@@ -57,7 +57,16 @@ Mini：
 
 以管理员身份，在PowerShell Core 7中，执行 `.\install.ps1 -Uninstall` 即可删除配置。
 
-## Profile
+## 4. 注意
+
+- 当前版本仅支持 Windows 10；
+- `install.ps1` 脚本**必须**以管理员身份运行；
+- **必须**在版本 >= 7 的 PowerShell 下执行脚本；
+- `install.ps1` 仅操作上下文菜单项的 Windows 资源管理器设置，而不写入 Windows Terminal 的设置；
+- 从 GitHub 下载 Windows Terminal 图标 (在 `install.ps1` 中) 需要 Internet 连接，最好在运行 `install.ps1` 时，将代理软件设置为全局代理；
+- 善用`Tab`自动补全
+
+# Profile
 附加一个Windows Terminal profile
 需要Module：
 * [posh-git](https://github.com/dahlbyk/posh-git): 
@@ -71,7 +80,7 @@ Mini：
 会自动设置代理，默认端口1080，自动判断terminal是不是Windows Terminal，如果不是不初始化前面的所有模块和设置，目的是加快启动速度，单脚本大多不需要这些模块
 可通过`$IsWindowsTerminal`参数判断在不在Windows Terminal中
 
-## Scripts
+# Scripts
 零碎的脚本，带FFMPEG需要环境变量有FFMPEG，带QAAC的需要QAAC
 * 2m4a.ps1: FFMPEG 转换视频到m4a
 * deleteSerialNumber.ps1: 删除文件名中的`(1)`，`- 副本`，`- 复制`
@@ -80,14 +89,6 @@ Mini：
 * removeMeta.ps1: FFMPEG 删除媒体metadata
 * split_long_m4a_and_lrc.ps1: QAAC 分割1小时以上的长m4a和lrc
 * swap.ps1: FFMPEG 交换左右声道
-* t2s.ps1: 繁体转简体，需要cc.py，且有OpenCC包
+* t2s.ps1: 繁体转简体，需要[cc.py](https://github.com/SplitGemini/scripts/cc.py)，且有OpenCC包
 
 
-## 4. 注意
-
-- 当前版本仅支持 Windows 10；
-- `install.ps1` 脚本**必须**以管理员身份运行；
-- **必须**在版本 >= 7 的 PowerShell 下执行脚本；
-- `install.ps1` 仅操作上下文菜单项的 Windows 资源管理器设置，而不写入 Windows Terminal 的设置；
-- 从 GitHub 下载 Windows Terminal 图标 (在 `install.ps1` 中) 需要 Internet 连接，最好在运行 `install.ps1` 时，将代理软件设置为全局代理；
-- 善用`Tab`自动补全
