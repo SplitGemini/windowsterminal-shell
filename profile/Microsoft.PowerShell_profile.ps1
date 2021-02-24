@@ -21,13 +21,15 @@ function Import-Profile-Modules {
     # ZLocation
     Import-Module ZLocation
     # for z.lua，类似ZLocation
-    #Start-Job -ScriptBlock {iex ($(lua D:\Administrator\Documents\PowerShell\z.lua --init powershell) -join "`n")}
+    #invoke-expression "&$(lua D:\Administrator\Documents\PowerShell\z.lua --init powershell) -join `"`n`""
 
-    # 引入 DirColors并设置颜色，已卸载
+    # 引入 DirColors并设置颜色，功能由Terminal-Icons替代，已卸载
     #Import-Module DirColors
     #Update-DirColors "D:\Administrator\Documents\PowerShell\dircolors.ansi-dark"
-
+    
+    # 颜色和图标
     Import-Module Terminal-Icons
+    # 自定义ls，颜色依赖Terminal-Icons
     Import-Module PowerColorLS
 
     # 设置个人主题
@@ -170,6 +172,10 @@ function Test-Port {
 
 # Set proxy to local with port
 function Set-Profile-Proxy {
+    if ($Env:http_proxy) {
+        Write-Host "Use environment proxy:$($Env:http_proxy)" -ForegroundColor Magenta -BackgroundColor Cyan
+        return
+    }
     #根据系统代理开关判断
     $regPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings'
     $enable = (Get-ItemProperty -Path $regPath).ProxyEnable
@@ -179,7 +185,7 @@ function Set-Profile-Proxy {
         $proxy = "http://$((Get-ItemProperty -Path $regPath).ProxyServer)"
         $Env:http_proxy=$proxy
         $Env:https_proxy=$proxy
-        Write-Host "Set Proxy:$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
+        Write-Host "Use system proxy:$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
     }
     elseif (Test-Port -ComputerName "127.0.0.1" -Port $port) {
         $proxy = "http://127.0.0.1:$port"
@@ -188,28 +194,33 @@ function Set-Profile-Proxy {
         # 这是直接加在环境变量里
         #[Environment]::SetEnvironmentVariable('http_proxy', $proxy, 'User')
         #[Environment]::SetEnvironmentVariable('https_proxy', $proxy, 'User')
-        Write-Host "Set Proxy:$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
+        Write-Host "Find Proxy:$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
     }
 }
 
-#-------------------------------    Proxy END     -------------------------------
 
-
-
-#-------------------------------   Set Alias Begin    -------------------------------
-function zlfuc ([Parameter()][String]$param){ z -l $param }
+#Set Alias
+function zlfuc ([String]$param) { z -l $param }
 function Set-Profile-Alias {
     # 查看目录 ls
     Set-Alias -Name ls -Value PowerColorLS -Option AllScope -Force -Scope Global
     New-Alias -Name zl -Value zlfuc -Option AllScope -Force -Scope Global
 }
-#-------------------------------    Set Alias END     -------------------------------
-$terminal = (Get-Process -Id $PID).Parent.ProcessName
-if ($terminal -ne 'WindowsTerminal') {
-    # speed up starting
-    Write-Host "This terminal isn't `"Windows Terminal`". Parent Process is `"${terminal}`", didn't initial modules"
+
+
+function Test-InWindowsTerminal ([switch]$HideMessage) {
+    $terminal = (Get-Process -Id $PID).Parent.ProcessName
+    if ($terminal -ne 'WindowsTerminal') {
+        Write-Host "This terminal isn't `"Windows Terminal`". Parent Process is `"${terminal}`", didn't initial modules"
+        $Global:IsWindowsTerminal = $false
+        return $false
+    }
+    $Global:IsWindowsTerminal = $true
+    return $true
 }
-else {
+
+# speed up starting, or use -NoProfile when run powershell
+if (Test-InWindowsTerminal) {
     Import-Profile-Modules
     Set-Profile-Hotkeys
     Set-Profile-Proxy
