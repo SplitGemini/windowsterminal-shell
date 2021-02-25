@@ -4,7 +4,8 @@ param(
         ValueFromRemainingArguments=$true)]
     [string[]] $Paths
 )
-$extension = ".mp4", ".avi", ".weba"
+# 不支持wildcard
+$extension = ".mp4", ".avi", ".weba", ".mkv", ".webm", ".wmv"
 function RunInDir([string]$path) {
     Write-Host "Solving `"$path`""
     Get-ChildItem -LiteralPath $path -File | Where-Object { $extension -contains $_.Extension} | `
@@ -16,8 +17,8 @@ function RunInDir([string]$path) {
 function RunInFile([string]$path) {
     Write-Host "Start transfer" $path
     $newvid = [io.path]::ChangeExtension($path, '.m4a')
-    if ((Get-ChildItem -LiteralPath $path).Extension -eq '.mp4') {
-        ffmpeg -y -hide_banner -i $path -vn -acodec copy $newvid
+    if ((Get-Item -LiteralPath $path).Extension -eq '.mp4') {
+        ffmpeg -y -hide_banner -i "$path" -vn -acodec copy "$newvid"
     }
     else {
         ffmpeg -y -hide_banner -i $path -vn -c:a aac $newvid
@@ -30,7 +31,7 @@ if ($Paths -and ($Paths.count -gt 0)) {
         try {
             $path = Resolve-Path -LiteralPath $path
             # 获取后缀 另一种方法[System.IO.Path]::GetExtension
-            if ((Test-Path -LiteralPath $path -PathType Leaf) -and ($extension -contains (Get-ChildItem -LiteralPath $path).Extension)) {
+            if ((Test-Path -LiteralPath $path -PathType Leaf) -and ($extension -contains (Get-Item -LiteralPath $path).Extension)) {
                 RunInFile $Path
             }
             elseif (Test-Path -LiteralPath $path -PathType Container){

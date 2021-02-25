@@ -89,6 +89,6 @@ Mini：
 * removeMeta.ps1: FFMPEG 删除媒体metadata
 * split_long_m4a_and_lrc.ps1: QAAC 分割1小时以上的长m4a和lrc
 * swap.ps1: FFMPEG 交换左右声道
-* t2s.ps1: 繁体转简体，需要[cc.py](https://github.com/SplitGemini/scripts/cc.py)，且有OpenCC包
+* t2s.ps1, s2t.ps1: 简繁互换，需要[cc.py](https://github.com/SplitGemini/scripts/blob/master/cc.py)，且有OpenCC包
 
 

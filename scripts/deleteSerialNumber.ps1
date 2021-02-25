@@ -4,6 +4,7 @@ param(
         ValueFromRemainingArguments=$true)]
     [string[]] $Paths
 )
+# 不支持wildcard
 $pattern = '(.*?)( \([0-9]+\)| - 副本| - 复制)+(\.[a-z0-9]{1,8})$'
 function RunInDir([string]$path) {
     Write-Host "Solving `"$path`""
@@ -14,7 +15,7 @@ function RunInDir([string]$path) {
 }
 
 function RunInFile([string]$path) {
-    $new_name = join-path -Path (Split-Path $path) -ChildPath ((Get-ChildItem $Path).name -replace $pattern ,'$1$3')
+    $new_name = join-path -Path (Split-Path $path) -ChildPath ((Get-Item -LiteralPath $Path).name -replace $pattern ,'$1$3')
     if (!(test-path $new_name)){
         Rename-Item -LiteralPath $path $new_name
         write-host "rename `"$path`" to `"$new_name`""

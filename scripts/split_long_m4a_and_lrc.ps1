@@ -15,10 +15,10 @@ function runQaac {
         [Parameter(Mandatory=$true)]
         [string]$source
     )
-    $command = "&`"C:\Program Files (x86)\foobar2000\encoders\qaac64.exe`" --no-optimize`
-     --threading -V 64 -N --copy-artwork $($start ? "--start $start" : '') $($end ? "--end $end" : '') -o `"$new_name`" `"$source`""
-    Write-Host $command
-    Invoke-Expression $command
+    qaac64.exe --no-optimize --threading -V 64 -N --copy-artwork`
+     ($start ? "--start $start" : '') ($end ? "--end $end" : '') -o $new_name $source
+    #Write-Host $command
+    #Invoke-Expression $command
 }
 
 $extension = ".m4a", ".lrc"

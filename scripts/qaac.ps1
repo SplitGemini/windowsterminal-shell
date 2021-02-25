@@ -1,3 +1,4 @@
+#require -version 7
 [CmdletBinding()]
 param(
     [switch] $High,
@@ -5,6 +6,7 @@ param(
     [Parameter(ValueFromRemainingArguments=$true)]
     [string[]] $Paths
 )
+# 不支持wildcard
 $output = join-path -path $(get-location).Path -ChildPath "output"
 if (!(test-path -LiteralPath $output)){
     New-Item -ItemType Directory -Force -Path $output
@@ -22,9 +24,9 @@ function RunInDir([string]$path) {
 function RunInFile([string]$path) {
     Write-Host "Start transfer `"$Path`""
     #$newvid = [io.path]::ChangeExtension($out, '.m4a')
-    $command = "&`"C:\Program Files (x86)\foobar2000\encoders\qaac64.exe`" --no-optimize --threading -V $($High ? 91 : 64) $($Normalize ? '-N ' : '')--copy-artwork -d `"$output`" `"$Path`""
-    Write-Host $command
-    Invoke-Expression $command
+    qaac64.exe --no-optimize --threading -V ($High ? 91 : 64) ($Normalize ? '-N' : '') --copy-artwork -d $output $Path
+    #Write-Host $command
+    #Invoke-Expression $command
 }
 
 if ($Paths -and ($Paths.count -gt 0)) {
@@ -33,7 +35,7 @@ if ($Paths -and ($Paths.count -gt 0)) {
         try {
             $path = Resolve-Path -LiteralPath $path
             # 获取后缀 另一种方法[System.IO.Path]::GetExtension
-            if ((Test-Path -LiteralPath $path -PathType Leaf) -and ($extension -contains (Get-ChildItem $Path).Extension)) {
+            if ((Test-Path -LiteralPath $path -PathType Leaf) -and ($extension -contains (Get-Item -LiteralPath $Path).Extension)) {
                 RunInFile $Path
             }
             elseif (Test-Path -LiteralPath $path -PathType Container){
