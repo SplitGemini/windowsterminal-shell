@@ -23,7 +23,7 @@ function RunInFile([string]$path) {
     $out = join-path -Path $output -ChildPath (Get-Item -LiteralPath $path).Name
     $newvid = [io.path]::ChangeExtension($out, '.m4a')
     Write-Host "Start normalize" $path
-    ffmpeg -y -hide_banner -i $path -threads 8 -af `"loudnorm=i=-23.0:lra=7.0:tp=-2.0:`" -ar 48000 -vn $newvid
+    ffmpeg -y -hide_banner -i $path -threads 8 -af "loudnorm=i=-23.0:lra=7.0:tp=-2.0:" -ar 48000 -vn $newvid
 }
 
 if ($Paths -and ($Paths.count -gt 0)) {

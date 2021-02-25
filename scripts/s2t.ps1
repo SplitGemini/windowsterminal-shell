@@ -26,7 +26,7 @@ if ($Paths -and ($Paths.count -gt 0)) {
         try {
             $path = Resolve-Path -LiteralPath $path
             # 获取后缀 另一种方法[System.IO.Path]::GetExtension
-            if ((Test-Path -LiteralPath $path -PathType Leaf) -and ($extension -contains (Get-Item $Path).Extension)) {
+            if ((Test-Path -LiteralPath $path -PathType Leaf) -and ($extension -contains (Get-Item -LiteralPath $Path).Extension)) {
                 RunInFile $Path
             }
             elseif (Test-Path -LiteralPath $path -PathType Container){

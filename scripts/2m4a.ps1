@@ -18,7 +18,7 @@ function RunInFile([string]$path) {
     Write-Host "Start transfer" $path
     $newvid = [io.path]::ChangeExtension($path, '.m4a')
     if ((Get-Item -LiteralPath $path).Extension -eq '.mp4') {
-        ffmpeg -y -hide_banner -i "$path" -vn -acodec copy "$newvid"
+        ffmpeg -y -hide_banner -i $path -vn -acodec copy $newvid
     }
     else {
         ffmpeg -y -hide_banner -i $path -vn -c:a aac $newvid

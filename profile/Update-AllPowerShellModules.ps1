@@ -45,32 +45,7 @@ foreach ($module in $modules.Name) {
     elseif ($moduleInfos.Version -eq $currentVersion) {
         Write-Host -ForegroundColor Green "$($moduleInfos.Name) already installed in the latest version ($currentVersion. Release date: $($moduleInfos.PublishedDate))"
     }
-    elseif ($currentVersion.count -gt 1) {
-        Write-Warning "$module is installed in $($currentVersion.count) versions (versions: $($currentVersion -join ' | '))"
-        Write-Host -ForegroundColor Cyan "Uninstall previous $module versions"
-        
-        try {
-            Get-InstalledModule -Name $module -AllVersions | Where-Object {$_.Version -ne $moduleInfos.Version} | Uninstall-Module -Force
-        }
-        catch {
-            Write-Error "$_.Exception.Message"
-        }
-        
-        Write-Host -ForegroundColor Cyan "$($moduleInfos.Name) - Install from PowerShellGallery version $($moduleInfos.Version). Release date: $($moduleInfos.PublishedDate)"  
-    
-        try {
-            if ($beta) {
-                Install-Module -Name $module -Force -AllowPrerelease -Scope CurrentUser
-            }
-            else {
-                Install-Module -Name $module -Force -Scope CurrentUser
-            }
-        }
-        catch {
-            Write-Error "$_.Exception.Message"
-        }
-    }
-    else {       
+    else {
         Write-Host -ForegroundColor Cyan "$($moduleInfos.Name) - Update from PowerShellGallery from version $currentVersion to $($moduleInfos.Version). Release date: $($moduleInfos.PublishedDate)" 
         try {
             if ($beta) {
@@ -83,5 +58,15 @@ foreach ($module in $modules.Name) {
         catch {
             Write-Error "$_.Exception.Message"
         }
+
+        Write-Host -ForegroundColor Cyan "Uninstall previous $module versions"
+        
+        try {
+            Get-InstalledModule -Name $module -AllVersions | Where-Object {$_.Version -ne $moduleInfos.Version} | Uninstall-Module -Force
+        }
+        catch {
+            Write-Error "$_.Exception.Message"
+        }
     }
+
 }

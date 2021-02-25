@@ -5,7 +5,7 @@
  * Date: 
  * Copyright: No copyright. You can use this code for anything with no warranty.
 #>
-
+$stopwatch =  [system.diagnostics.stopwatch]::StartNew()
 # Import Modules
 function Import-Profile-Modules {
 
@@ -148,8 +148,8 @@ function Update-All {
 
 
 # Test a name with port if it is opened
-function Test-Port {
-    Param([string]$ComputerName,$Port = 2222,$timeout = 200)
+function script:Test-Port {
+    Param([string]$ComputerName,[int]$Port = 2222,[int]$timeout = 200)
     try {
         $tcpclient = New-Object -TypeName system.Net.Sockets.TcpClient
         $iar = $tcpclient.BeginConnect($ComputerName,$port,$null,$null)
@@ -180,13 +180,14 @@ function Set-Profile-Proxy {
     $regPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings'
     $enable = (Get-ItemProperty -Path $regPath).ProxyEnable
     $port = 1080
-    # 根据端口是否连通判断，如果开了系统代理则用系统代理
+    # 如果开了系统代理则用系统代理
     if ($enable -gt 0){
         $proxy = "http://$((Get-ItemProperty -Path $regPath).ProxyServer)"
         $Env:http_proxy=$proxy
         $Env:https_proxy=$proxy
         Write-Host "Use system proxy:$proxy" -ForegroundColor Magenta -BackgroundColor Cyan
     }
+    # 根据端口是否连通判断
     elseif (Test-Port -ComputerName "127.0.0.1" -Port $port) {
         $proxy = "http://127.0.0.1:$port"
         $Env:http_proxy=$proxy
@@ -198,13 +199,14 @@ function Set-Profile-Proxy {
     }
 }
 
-
+function zlFunc {
+    z -l $args
+}
 #Set Alias
-function zlfuc ([String]$param) { z -l $param }
 function Set-Profile-Alias {
     # 查看目录 ls
     Set-Alias -Name ls -Value PowerColorLS -Option AllScope -Force -Scope Global
-    New-Alias -Name zl -Value zlfuc -Option AllScope -Force -Scope Global
+    New-Alias -Name zl -Value zlFunc -Option AllScope -Force -Scope Global
 }
 
 
@@ -219,10 +221,22 @@ function Test-InWindowsTerminal ([switch]$HideMessage) {
     return $true
 }
 
+
 # speed up starting, or use -NoProfile when run powershell
 if (Test-InWindowsTerminal) {
     Import-Profile-Modules
     Set-Profile-Hotkeys
     Set-Profile-Proxy
     Set-Profile-Alias
+    $time = $stopwatch.ElapsedMilliseconds
+    write-host Total initial time is: ${time}ms
 }
+
+
+Remove-Variable stopwatch
+Remove-Item function:Test-Port
+Remove-Item function:Test-InWindowsTerminal
+Remove-Item function:Set-Profile-Alias
+Remove-Item function:Set-Profile-Proxy
+Remove-Item function:Import-Profile-Modules
+Remove-Item function:Set-Profile-Hotkeys
