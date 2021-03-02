@@ -1,3 +1,4 @@
+#Require -Module Get-MediaInfo
 [CmdletBinding()]
 param(
     [Parameter(Position = 0,
@@ -10,39 +11,40 @@ function RunInDir([string]$path) {
     Write-Host "Solving `"$path`""
     Get-ChildItem -LiteralPath $path -File | Where-Object { $extension -contains $_.Extension} | `
     ForEach-Object {
-        RunInFile $_.FullName
+        RunInFile $_
     }
 }
 
-function RunInFile([string]$path) {
-    Write-Host "Start transfer" $path
-    $newvid = [io.path]::ChangeExtension($path, '.m4a')
-    if ((Get-Item -LiteralPath $path).Extension -eq '.mp4') {
-        ffmpeg -y -hide_banner -i $path -vn -acodec copy $newvid
+function RunInFile([Parameter(Mandatory = $true)]$path) {
+    Write-Host "Start transfer" $path.fullname
+    $newvid = [io.path]::ChangeExtension($path.fullname, '.m4a')
+    if ((Get-MediaInfo $path.fullname).AudioCodec -eq 'AAC LC') {
+        ffmpeg -y -hide_banner -i $path.fullname -vn -acodec copy $newvid
     }
     else {
-        ffmpeg -y -hide_banner -i $path -vn -c:a aac $newvid
+        ffmpeg -y -hide_banner -i $path.fullname -vn -c:a aac -b:a (Get-MediaInfo $path).AudioBitRate $newvid
     }
 }
 
 if ($Paths -and ($Paths.count -gt 0)) {
     foreach ($path in $Paths) {
-        $path = $path -replace '`(\[|\]|\.|\*)' ,'$1'
+        $path = [Management.Automation.WildcardPattern]::Unescape($path)
         try {
-            $path = Resolve-Path -LiteralPath $path
+            $path = Convert-Path -LiteralPath $path
+            $path = Get-Item -LiteralPath $path
             # 获取后缀 另一种方法[System.IO.Path]::GetExtension
-            if ((Test-Path -LiteralPath $path -PathType Leaf) -and ($extension -contains (Get-Item -LiteralPath $path).Extension)) {
+            if (!$path.PSIsContainer -and ($extension -contains $Path.Extension)) {
                 RunInFile $Path
             }
-            elseif (Test-Path -LiteralPath $path -PathType Container){
+            elseif ($path.PSIsContainer){
                 RunInDir $Path
             }
             else {
-                Write-Host "`"$path`" doesn't exists or not surported."
+                Write-Host "`"$path`" not surported."
             }
         }
         catch {
-            Write-Host "Error $_ : when proceed `"$path`"."
+            Write-Host "`"$path`" doesn't exists or not surported. Error $_"
         }
     }
 }

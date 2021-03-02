@@ -74,7 +74,7 @@ Mini：
 * [PSReadLine](https://github.com/PowerShell/PSReadLine): 2.20beta1.
 * [PowerColorLS](https://github.com/SplitGemini/PowerColorLS): Customed by myself, but use [origin version](https://github.com/gardebring/PowerColorLS) is ok.
 * [ZLocation](https://github.com/vors/ZLocation): z command like z.sh.
-* [Get-MediaInfo](https://github.com/stax76/Get-MediaInfo): just get mediainfo.  
+* [Get-MediaInfo](https://github.com/SplitGemini/Get-MediaInfo): just get mediainfo. Customed by myself, but use [origin version](https://github.com/stax76/Get-MediaInfo) is ok.  
   
 需要同目录的[Update-AllPowerShellModules.ps1](Update-AllPowerShellModules.ps1)，使用`Update-Pip`更新pip，`Update-Modules`更新所有module，`Update-All`更新俩者。
 会自动设置代理，默认端口1080，自动判断terminal是不是Windows Terminal，如果不是不初始化前面的所有模块和设置，目的是加快启动速度，单脚本大多不需要这些模块
@@ -82,12 +82,12 @@ Mini：
 
 # Scripts
 零碎的脚本，带FFMPEG需要环境变量有FFMPEG，带QAAC的需要QAAC
-* 2m4a.ps1: FFMPEG 转换视频到m4a
+* 2m4a.ps1: FFMPEG 转换视频到m4a, need [Get-MediaInfo](https://github.com/SplitGemini/Get-MediaInfo)
 * deleteSerialNumber.ps1: 删除文件名中的`(1)`，`- 副本`，`- 复制`
 * normalize.ps1: FFMPEG 响度正则化音频
 * qaac.ps1: QAAC 转换音频到m4a
 * removeMeta.ps1: FFMPEG 删除媒体metadata
-* split_long_m4a_and_lrc.ps1: QAAC 分割1小时以上的长m4a和lrc
+* split_long_m4a_and_lrc.ps1: QAAC 分割1小时以上的长m4a和lrc, need [Get-MediaInfo](https://github.com/SplitGemini/Get-MediaInfo)
 * swap.ps1: FFMPEG 交换左右声道
 * t2s.ps1, s2t.ps1: 简繁互换，需要[cc.py](https://github.com/SplitGemini/scripts/blob/master/cc.py)，且有OpenCC包
 

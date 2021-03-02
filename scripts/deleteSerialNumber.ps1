@@ -10,12 +10,12 @@ function RunInDir([string]$path) {
     Write-Host "Solving `"$path`""
     Get-ChildItem -LiteralPath $path -File | Where-Object { $extension -contains $_.Extension} | `
     ForEach-Object {
-        RunInFile $_.FullName
+        RunInFile $_
     }
 }
 
 function RunInFile([string]$path) {
-    $new_name = join-path -Path (Split-Path $path) -ChildPath ((Get-Item -LiteralPath $Path).name -replace $pattern ,'$1$3')
+    $new_name = join-path -Path (Split-Path $path.FullName) -ChildPath ($Path.name -replace $pattern ,'$1$3')
     if (!(test-path $new_name)){
         Rename-Item -LiteralPath $path $new_name
         write-host "rename `"$path`" to `"$new_name`""
@@ -24,22 +24,20 @@ function RunInFile([string]$path) {
 
 if ($Paths -and ($Paths.count -gt 0)) {
     foreach ($path in $Paths) {
-        $path = $path -replace '`(\[|\]|\.|\*)' ,'$1'
+        $path = [Management.Automation.WildcardPattern]::Unescape($path)
         try {
-            $path = Resolve-Path -LiteralPath $path
+            $path = Convert-Path -LiteralPath $path
+            $path = Get-Item -LiteralPath $path
             # 获取后缀 另一种方法[System.IO.Path]::GetExtension
-            if (Test-Path -LiteralPath $path -PathType Leaf) {
+            if (!$path.PSIsContainer) {
                 RunInFile $Path
             }
-            elseif (Test-Path -LiteralPath $path -PathType Container){
+            else ($path.PSIsContainer){
                 RunInDir $Path
-            }
-            else {
-                Write-Host "`"$path`" doesn't exists."
             }
         }
         catch {
-            Write-Host "Error $_ : when proceed `"$path`"."
+            Write-Host "`"$path`" doesn't exists or not surported. Error $_"
         }
     }
 }

@@ -13,12 +13,20 @@ function runQaac {
         [Parameter(Mandatory=$true)]
         [string]$new_name,
         [Parameter(Mandatory=$true)]
-        [string]$source
+        $source
     )
+    $cover = join-path -path $parent -ChildPath cover.jpg
+    $str = tageditor extract cover --output-file $cover --file $source.FullName | Out-String
+    $bytes = [System.Text.Encoding]::GetEncoding('gbk').GetBytes($str)
+    $nf = [System.Text.Encoding]::UTF8.GetString($bytes)
+    write-host $nf
     qaac64.exe --no-optimize --threading -V 64 -N --copy-artwork`
-     ($start ? "--start $start" : '') ($end ? "--end $end" : '') -o $new_name $source
+     ($start ? "--start $start" : '') ($end ? "--end $end" : '') --artwork $cover -o $new_name $source.FullName
     #Write-Host $command
     #Invoke-Expression $command
+    if (test-path -LiteralPath $cover) {
+        remove-item -LiteralPath $cover
+    }
 }
 
 $extension = ".m4a", ".lrc"
@@ -31,10 +39,10 @@ ForEach-Object {
         while ($duration -gt ($i * 60)) {
             $new_name = join-path -Path $parent -ChildPath ((Split-Path -LeafBase $_) + ".$($i + 1)" + $_.Extension)
             if ($duration -gt (($i + 1) * 60)) {
-                runQaac -start "${i}:00:00" -end "$($i + 1):00:00" -new_name $new_name -source $_.FullName
+                runQaac -start "${i}:00:00" -end "$($i + 1):00:00" -new_name $new_name -source $_
             }
             else {
-                runQaac -start "${i}:00:00" -new_name $new_name -source $_.FullName
+                runQaac -start "${i}:00:00" -new_name $new_name -source $_
             }
             $i ++
         }

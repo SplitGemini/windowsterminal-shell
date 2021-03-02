@@ -1,12 +1,12 @@
+#require -version 7
 [CmdletBinding()]
 param(
-    [Parameter(Position = 0,
-        ValueFromRemainingArguments=$true)]
+    [Parameter(ValueFromRemainingArguments=$true)]
     [string[]] $Paths
 )
 # 不支持wildcard
-#转繁体
-$extension = ".lrc", ".srt", ".txt"
+
+$extension = '.opus', '.ogg', '.mp3', '.wav', '.flac', '.ape', '.m4a'
 function RunInDir([string]$path) {
     Write-Host "Solving `"$path`""
     Get-ChildItem -LiteralPath $path -File | Where-Object { $extension -contains $_.Extension} | `
@@ -15,12 +15,18 @@ function RunInDir([string]$path) {
     }
 }
 
-function RunInFile([Parameter(Mandatory = $true)]$path) {
-    Write-Host "Start transfer simplified chinese to tranditional chinese: `"$path`""
-    cc -e t -i $path.FullName -o $path.FullName
+function RunInFile([Parameter(Mandatory = $true)]$path,
+                   [Parameter(Mandatory = $true)][int]$track) {
+    Write-Host "Start transfer `"$Path`""
+    #$newvid = [io.path]::ChangeExtension($out, '.m4a')
+    $str = tageditor set track $track --file $Path.FullName | Out-String
+    $bytes = [System.Text.Encoding]::GetEncoding('gbk').GetBytes($str)
+    $nf = [System.Text.Encoding]::UTF8.GetString($bytes)
+    write-host $nf
 }
 
 if ($Paths -and ($Paths.count -gt 0)) {
+    $Paths = $Paths | Sort-Object Name
     foreach ($path in $Paths) {
         $path = [Management.Automation.WildcardPattern]::Unescape($path)
         try {
